@@ -1,17 +1,21 @@
+# python3
 # Serial Utility for twelite, cansat.
 # extended format used.
 
 import serial
+
 
 SER_HEADER = bytearray([0xA5, 0x5A])
 
 
 def main():
     print("program started.")
+
     res = 0x19  # anything is okay.
-    addr = 0x01  # for relay
-    data = bytearray([0xFA])
-    portid = 'COM??'
+    addr = 0x02  # for relay
+    data = bytearray([0xFA])  # set data here
+    portid = 'COM??'  # set port id here
+
     srl = serialize(command(res, addr, data))
 
     port = serial.Serial(port=portid, baudrate=9600)
