@@ -13,19 +13,32 @@ def main():
 
     res = 0x19  # anything is okay.
     addr = 0x02  # for relay
-    data = bytearray([0xFA])  # set data here
+    data = bytearray([0x01])  # set data here
     portid = 'COM??'  # set port id here
 
     srl = serialize(command(res, addr, data))
 
-    port = serial.Serial(port=portid, baudrate=9600)
-    port.write(srl)
-    port.close()
-
-    print("output:")
+    print("# # #")
 
     for s in srl:
-        print(hex(s))
+        print(s, end=" ")
+
+    print("# # #")
+
+    port = serial.Serial(port=portid, baudrate=9600)
+    port.write(srl)
+
+    returned_data = bytes()
+
+    while port.readable():
+        returned_data += port.read()
+
+    port.close()
+
+    print("returned...")
+
+    for r in returned_data:
+        print(r, end=" ")
 
 
 # responceid: byte
