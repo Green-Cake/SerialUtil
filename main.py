@@ -1,15 +1,17 @@
-# python3
-# Serial Utility for twelite, cansat.
-# extended format used.
+"""
+for python3
+Serial Utility for Twelite, Cansat.
+extended format used.
+"""
 
 import serial
-
+import time
 
 SER_HEADER = bytearray([0xA5, 0x5A])
+TIME_OUT = 1000
 
 
 def main():
-    print("program started.")
 
     res = 0x19  # anything is okay.
     addr = 0x02  # for relay
@@ -30,7 +32,9 @@ def main():
 
     returned_data = bytes()
 
-    while port.readable():
+    t_s = time.time()
+
+    while port.readable() and t_s - time.time() < TIME_OUT:
         returned_data += port.read()
 
     port.close()
@@ -43,7 +47,7 @@ def main():
 
 # responceid: byte
 # addr: byte
-def command(responceid: int, addr: int, data: bytearray):
+def command(responceid: int, addr: int, data: bytearray) -> bytearray:
     result = bytearray([0x80, 0xA0, responceid, 0, 0, 0, addr, 0xFF])
     result += data
     return result
@@ -51,7 +55,7 @@ def command(responceid: int, addr: int, data: bytearray):
 
 # command -> serialize -> output
 # data: bytearray
-def serialize(data):
+def serialize(data) -> bytearray:
     result = bytearray()
     result += SER_HEADER  # header
     result += bytearray([0x80, len(data)])
@@ -60,7 +64,7 @@ def serialize(data):
     return result
 
 
-def checksum(data: bytearray):
+def checksum(data: bytearray) -> bytearray:
     a = 0
     for d in data:
         a ^= d
