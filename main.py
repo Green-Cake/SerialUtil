@@ -4,8 +4,8 @@ Serial Utility for Twelite, Cansat.
 extended format used.
 """
 
+
 import serial
-import time
 
 SER_HEADER = bytearray([0xA5, 0x5A])
 TIME_OUT = 1000
@@ -15,7 +15,7 @@ def main():
 
     res = 0x19  # anything is okay.
     addr = 0x02  # for relay
-    data = bytearray([0x01])  # set data here
+    data = bytearray([0x02])  # set data here
     portid = 'COM??'  # set port id here
 
     srl = serialize(command(res, addr, data))
@@ -27,14 +27,12 @@ def main():
 
     print("# # #")
 
-    port = serial.Serial(port=portid, baudrate=9600)
+    port = serial.Serial(port=portid, baudrate=115200)
     port.write(srl)
 
     returned_data = bytes()
 
-    t_s = time.time()
-
-    while port.readable() and t_s - time.time() < TIME_OUT:
+    while port.readable():
         returned_data += port.read()
 
     port.close()
